@@ -13,13 +13,16 @@ class Summoner extends EventEmitter
 		@cache = {}
 
 		if _.isString(name)
-			@_call "summoner", name, (data) =>
+			@_call "summoner", name, (err, data) =>
+				if err then @emit "error", err
 				if data then @_init data
 		else if _.isObject(name) then @_init name
 		else if _.isNumber(name)
-			@_call "summoner_names", name, (data) =>
+			@_call "summoner_names", name, (err, data) =>
+				if err then @emit "error", err
 				if _.isArray(data) and data.length
-					@_call "summoner", data[0], (d) =>
+					@_call "summoner", data[0], (err, d) =>
+						if err then @emit "error", err
 						if d then @_init d
 
 	_init: (data) ->
@@ -36,9 +39,8 @@ class Summoner extends EventEmitter
 
 	_call: (method, args..., cb) ->
 		callback = (err, data) =>
-			if err then @emit "error", err
 			if data and @options.cache then @cache[method] = data
-			if _.isFunction(cb) then cb.call null, data
+			if _.isFunction(cb) then cb.apply null, arguments
 
 		a = _.chain([args, { region: @options.region, apikey: @options.apikey }, callback]).flatten().compact().value()
 		api[method].apply null, a

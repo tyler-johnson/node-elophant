@@ -29,13 +29,15 @@ elophant.summonerNames([ 22452772, 22519058 ], { complex: true }, function(err, 
 });
 ```
 
-Create new `Summoner` object by the summoner's name. Captures two events: `ready` when the base info has loaded and `error` if the object ever hits an error.
+Create new `Summoner` object by the summoner's name. Captures two events: `ready` when the base info has loaded and `error` if the object hits an error during load.
 
 ``` js
 var fuo213 = new (elophant.Summoner)("fuo213");
+
 fuo213.on("ready", function() {
-	fuo213.leagues(function(data) {
-		console.log(data);
+	fuo213.leagues(function(err, data) {
+		if (err) console.log(err.stack);
+		else console.log(data);
 	});
 });
 
@@ -48,6 +50,7 @@ Custom API call because why not.
 
 ``` js
 var url = elophant.buildURL("na", "SECRET_APIKEY", "summoner", "fuo213");
+
 elophant.callAPI(url, function(err, data) {
 	if (err) console.error(err);
 	else console.log(data);
