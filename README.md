@@ -10,7 +10,7 @@ Setting up. Second argument is an `options` object and is optional. The region d
 var elophant = require("elophant")("SECRET_APIKEY", { region: "na" });
 ```
 
-All of the api methods at your fingertips.
+Every one of the [Elophant api methods](http://elophant.com/developers/docs) at your fingertips. FYI: `elophant.masteryPages() === elophant.mastery_pages()`.
 
 ``` js
 elophant.masteryPages(22452772, function(err, data) {
