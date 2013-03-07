@@ -1,0 +1,10 @@
+{
+	"name": "elophant",
+	"version": "0.1.0",
+	"main": "main.js",
+	"dependencies": {
+		"async": "0.2.6",
+		"underscore": "1.4.4",
+		"request": "2.14.0"
+	}
+}
