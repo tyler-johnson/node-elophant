@@ -7,7 +7,7 @@ Library for connecting to [Elopant's API](http://elophant.com/developers). Docum
 Setting up. Second argument is an `options` object and is optional. The region defaults to `na`.
 
 ``` js
-	var elophant = require("elophant")("SECRET_APIKEY", { region: "na" });
+var elophant = require("elophant")("SECRET_APIKEY", { region: "na" });
 ```
 
 All of the api methods at your fingertips.
@@ -38,7 +38,8 @@ fuo213.on("ready", function() {
 		console.log(data);
 	});
 });
-	fuo213.on("error", function(err) {
+
+fuo213.on("error", function(err) {
 	console.error(err);
 });
 ```
