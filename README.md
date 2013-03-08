@@ -103,7 +103,7 @@ elophant.callAPI(url, function(err, data) {
 
 ### Basic Elophant API
 
-The following methods are standardized to [Elophant's API](http://elophant.com/developers/docs). You can call these methods by their traditional name (ie `rune_pages`) or by the JS standard name (ie `runePages`). All `callback`s take two arguments, `error` and `data`, where `data` is the parsed Elophant data. `options` is an optional Javascript object.
+The following methods are standardized to [Elophant's API](http://elophant.com/developers/docs). You can call these methods by their traditional name (ie `rune_pages`) or by the better formatted name (ie `runePages`). All `callback`s take two arguments, `error` and `data`, where `data` is the parsed Elophant data. `options` is an optional Javascript object.
 
 #### Options
 

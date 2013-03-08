@@ -2,7 +2,7 @@
 	"name": "elophant",
 	"version": "0.2.1",
 	"author": "Tyler Johnson <tyler@vintyge.com>",
-	"description": "Library for connecting to Elopant's API and Riot's League of Legends game data.",
+	"description": "Library for connecting to Elophant's API and Riot's League of Legends game data.",
 	"homepage": "https://github.com/appleifreak/node-elophant",
 	"main": "main.js",
 	"dependencies": {
