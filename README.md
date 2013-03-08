@@ -1,6 +1,12 @@
 # Node-Elophant API Library
 
-Library for connecting to [Elopant's API](http://elophant.com/developers). Documentation and more details to come when it's finished.
+Library for connecting to [Elopant's API](http://elophant.com/developers) and Riot's League of Legends game data.
+
+## Install
+
+``` bash
+npm install elophant
+```
 
 ## Examples
 
@@ -92,3 +98,82 @@ elophant.callAPI(url, function(err, data) {
 	else console.log(data);
 });
 ```
+
+## API Documentation
+
+### Basic Elophant API
+
+The following methods are standardized to [Elophant's API](http://elophant.com/developers/docs). You can call these methods by their traditional name (ie `rune_pages`) or by the JS standard name (ie `runePages`). All `callback`s take two arguments, `error` and `data`, where `data` is the parsed Elophant data. `options` is an optional Javascript object.
+
+#### Options
+
+* `region` : Uses this region for the call instead of the original one passed.
+* `apikey` : Uses this apikey for the call instead of the original one passed.
+* `complex`: Only available on a few methods. Essentially forces the callback to create either `Summoner` or `Team` objects on return
+
+#### Methods
+
+* `summoner(summonerName, [ options, ] [ callback ])` : <http://elophant.com/developers/docs/summoner>
+* `masteryPages(summonerId, [ options, ] [ callback ])` : <http://elophant.com/developers/docs/mastery_pages>
+* `runePages(summonerId, [ options, ] [ callback ])` : <http://elophant.com/developers/docs/rune_pages>
+* `recentGames(accountId, [ options, ] [ callback ])` : <http://elophant.com/developers/docs/recent_games>
+* `summonerNames(summonerIds, [ options, ] [ callback ])` : Accepts array, string or number for `summonerIds`. <http://elophant.com/developers/docs/summoner_names>
+* `leagues(summonerId, callback)` : <http://elophant.com/developers/docs/leagues>
+* `rankedStats(accountId, [ season, ] [ options, ] [ callback ])` : <http://elophant.com/developers/docs/ranked_stats>
+* `summonerTeamInfo(summonerId, [ options, ] [ callback ])` : <http://elophant.com/developers/docs/summoner_team_info>
+* `inProgressGameInfo(summonerName, [ options, ] [ callback ])` : <http://elophant.com/developers/docs/in_progress_game_info>
+* `team(teamId, [ options, ] [ callback ])` : <http://elophant.com/developers/docs/team>
+* `findTeam(tagOrName, [ options, ] [ callback ])` : <http://elophant.com/developers/docs/find_team>
+* `teamEndOfGameStats(teamId, gameId, [ options, ] [ callback ])` : <http://elophant.com/developers/docs/team_end_of_game_stats>
+* `teamRankedStats(teamId, [ options, ] [ callback ])` : <http://elophant.com/developers/docs/team_ranked_stats>
+
+### Summoner Class
+
+The `Summoner` class is convienent way to deal with summoner data. The constructor makes one API call to retrieve basic data (like `summonerId`) and then uses that to make additional calls. The base class is attached as `elophant.Summoner`. See the examples for proper usage.
+
+``` js
+new (elophant.Summoner)(name | summonerId | data [, options ] );
+```
+
+#### Options
+
+* `cache`, Default: `true` : Cache results on subsequent call. Prevents too many api calls from being  made.
+* `region` : Uses this region for the call instead of the original one passed.
+* `apikey` : Uses this apikey for the call instead of the original one passed.
+
+#### Methods
+
+* `masteryPages([ callback ])`
+* `runePages([ callback ])`
+* `recentGames([ callback ])`
+* `leagues([ callback ])`
+* `summonerTeamInfo([ complex ] [, callback ])` : Set `complex` to `true` for `Team` objects instead of basic objects.
+* `inProgressGameInfo([ callback ])`
+* `rankedStats([ season ] [, callback ])`
+
+### Team Class
+
+The `Team` class is convienent way to deal with team data. The constructor makes one API call to retrieve basic data (like `teamId`) and then uses that to make additional calls. The base class is attached as `Team`. See the examples for proper usage.
+
+``` js
+new (elophant.Team)(teamId | tagOrName | data [, options ] );
+```
+
+#### Options
+
+* `tagOrName`, Default: `false` : Tells the contructor that the first argument passed is a team tag or name and not a teamId.
+* `cache`, Default: `true` : Cache results on subsequent call. Prevents too many api calls from being  made.
+* `region` : Uses this region for the call instead of the original one passed.
+* `apikey` : Uses this apikey for the call instead of the original one passed.
+
+#### Methods
+
+* `endOfGameStats(gameId, [ callback ])`
+* `rankedStats([ callback ])` : Team ranked stats (not summoner ranked stats)
+
+### Other Methods
+
+These are some additional methods, attached directly to `elophant`, to help out with API calls.
+
+* `buildURL(region, apikey [, args... ])` : Build an API URL from the `region`, `apikey` and the rest of the parameters. Pass null for any of the arguments to leave out.
+* `callAPI(url, callback)` : Make an API call and parse response JSON for `data` or `error`.
