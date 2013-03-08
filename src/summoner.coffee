@@ -37,12 +37,17 @@ class Summoner extends EventEmitter
 			else return cache
 		else @_call method, args, cb
 
-	_call: (method, args..., cb) ->
+	_call: (method, args..., options, cb) ->
+		if _.isFunction(options) then [cb, options] = [options, {}]
+		options = _.extend options or {},
+			region: @options.region,
+			apikey: @options.apikey
+
 		callback = (err, data) =>
 			if data and @options.cache then @cache[method] = data
 			if _.isFunction(cb) then cb.apply null, arguments
 
-		a = _.chain([args, { region: @options.region, apikey: @options.apikey }, callback]).flatten().compact().value()
+		a = _.chain([args, options, callback]).flatten().compact().value()
 		api[method].apply null, a
 
 	# Actual API
@@ -58,8 +63,9 @@ class Summoner extends EventEmitter
 	leagues: (cb) ->
 		return @_handle "leagues", @summonerId, cb
 
-	summonerTeamInfo: (cb) ->
-		return @_handle "summoner_team_info", @summonerId, cb
+	summonerTeamInfo: (complex, cb) ->
+		if _.isFunction(complex) then [cb, complex] = [complex, true]
+		return @_handle "summoner_team_info", @summonerId, { complex: complex }, cb
 
 	inProgressGameInfo: (cb) ->
 		return @_handle "in_progress_game_info", @name, cb

@@ -5,6 +5,7 @@ request = require 'request'
 nconf = require 'nconf'
 async = require 'async'
 Summoner = require './summoner'
+Team = require './team'
 
 ELOPHANT_BASE = "http://api.elophant.com/v2/"
 ELOPHANT_REGIONS = [ "na", "euw", "eune", "br" ]
@@ -55,11 +56,28 @@ module.exports.champions = (o, cb) ->
 	callAPI url, cb
 
 # API methods that only require one argument
-_.each [ "summoner", "mastery_pages", "rune_pages", "recent_games", "leagues", "summoner_team_info", "in_progress_game_info", "team", "find_team" ], (method) ->
+_.each [ "mastery_pages", "rune_pages", "recent_games", "leagues", "in_progress_game_info" ], (method) ->
 	fnc = (arg, o, cb) ->
 		[o, cb] = buildOptionsCallback o, cb
 		url = buildURL o.region, o.apikey, method, arg
 		callAPI url, cb
+
+	module.exports[method] = fnc
+
+# API Methods that may return Team objects
+_.each [ "team", "find_team" ], (method) ->
+	fnc = (arg, o, cb) ->
+		[o, cb] = buildOptionsCallback o, cb
+		_.defaults o, { complex: false }
+
+		if o.complex
+			callback = (err, data) ->
+				if err then cb(err)
+				else cb null, new Team(data)
+		else callback = cb
+
+		url = buildURL o.region, o.apikey, method, arg
+		callAPI url, callback
 
 	module.exports[method] = fnc
 
@@ -110,6 +128,21 @@ module.exports.summoner_names = (ids, o, cb) ->
 	url = buildURL o.region, o.apikey, "summoner_names", ids
 	url = url.replace "%2C", ","
 	
+	callAPI url, callback
+
+module.exports.summoner_team_info = (sid, o, cb) ->
+	[o, cb] = buildOptionsCallback o, cb
+	_.defaults o, { complex: false }
+
+	if o.complex
+		callback = (err, data) ->
+			if err then cb(err)
+			else if _.isObject(data) and _.isArray(data.teamsSummary)
+				cb null, _.map data.teamsSummary, (team) -> return new Team(team)
+			else cb null, []
+	else callback = cb
+
+	url = buildURL o.region, o.apikey, "summoner_team_info", sid
 	callAPI url, callback
 
 module.exports.team_end_of_game_stats = (tid, gid, o, cb) ->

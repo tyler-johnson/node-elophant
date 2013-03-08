@@ -9,11 +9,12 @@ nconf.use('memory');
 var api = require("./lib/api");
 
 api.Summoner = require("./lib/summoner");
+api.Team = require("./lib/team");
 
 module.exports = function (apikey, options) {
 	options = _.defaults(options || {}, { REGION: "na", APIKEY: null })
 	if (apikey) options.APIKEY = apikey;
 	nconf.set("ELOPHANT", options);
-	
+
 	return api;
 }
